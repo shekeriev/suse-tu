@@ -3,27 +3,34 @@ This document describes the requirements and the steps to follow in order to pre
 - Hardware and Software Requirements
 - Virtual Machines Repository
 - Hypervisor Instructions
+- Troubleshooting
+
+The most up to date version of this document can be found here: <https://github.com/shekeriev/suse-tu/tree/main/virtual-machines>
 
 ## Hardware and Software Requirements
 Your hardware is expected to meet the following requirements:
-- An Intel or AMD-based CPU capable of virtualization
-- At least 4 GB of RAM
-- At least 10 GB of free hard disk space
+- 64-bit Intel or AMD-based CPU capable of virtualization
+- at least 4 GB of RAM
+- at least 10 GB of free hard disk space
 
-In terms of software, you must have installed a recent version of **one** of the following virtualization solutions:
-- Microsoft Hyper-V - free addition to Windows. More information on how to activate it can be found here: https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v
-- Oracle VirtualBox - free solution that can be installed on both Windows and most Linux distributions. Can be downloaded from here: https://www.virtualbox.org/
-- VMware Workstation - has free (WMware Workstation Player) and paid (WMware Workstation Pro) version. There is an option for a trial period of 30 days. Can be downloaded from here: https://www.vmware.com/products/workstation-pro.html
+In terms of software, you must be working on a recent version of Windows 10/11, macOS, or Linux distribution. In addition, you must have installed a recent version of **one** of the following virtualization solutions:
+- **Microsoft Hyper-V** - a free addition to Windows (1). More information on how to activate it can be found here: <https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v>
+- **Oracle VirtualBox** - a free solution that can be installed on both Windows and most Linux distributions. Can be downloaded from here: <https://www.virtualbox.org/>
+- **VMware Workstation** - has free (***WMware Workstation Player***) and paid (***WMware Workstation Pro***) version. There is an option for a trial period of 30 days. Can be downloaded from here: <https://www.vmware.com/products/workstation-pro.html>
+
+*(1) Hyper-V role is available and supported only on Windows Pro, Enterprise, and Education editions.*
+
+In general, if you are wondering which one to select, go for Oracle VirtualBox. It is simple, free, and offers broad support for both host and guest operating systems.
 
 ## Virtual Machines Repository
-Virtual machine templates can be downloaded from here: https://zahariev.pro/go/suse-tu
+Virtual machine templates can be downloaded from here: <https://zahariev.pro/go/suse-tu>
 
-Each template file's name follows this structure **xx-opensuse-leap-15.3[-gnome].yyy**. Where ***xx*** is the type of the virtualization solution and yyy is the type of the file - either *zip* or *ova*.
+Each template file's name follows this structure ***xx-opensuse-leap-15.3[-gnome].yyy***. Where ***xx*** is the type of the virtualization solution and ***yyy*** is the type of the file - either ***zip*** or ***ova***.
 
 There are three sets of templates - one for every supported virtualization solution. They can be distinguished by the first two letters:
-- **hv** stands for Microsoft Hyper-V
-- **vb** stands for Oracle VirtualBox
-- **vm** stands for VMware Workstation
+- **hv** stands for **Microsoft Hyper-V**
+- **vb** stands for **Oracle VirtualBox**
+- **vm** stands for **VMware Workstation**
 
 Furthermore, for every solution, there are two different versions - one without a desktop environment (text-only mode) and one with a desktop environment (GNOME).
 
@@ -37,10 +44,10 @@ Credentials for the virtual machines are:
 Below you can find the instructions to import a template for your virtualization solution.
 
 In the next sections, the following is assumed:
-- the host operating system is Windows 10
-- the virtual machines are stored in C:\VM
+- the host operating system is **Windows 10**
+- the virtual machines are stored in **C:\VM**
 - we are working with the template without a graphical environment
-- our new virtual machine will be named VM1
+- our new virtual machine will be named **VM1**
 
 If your setup is different, then you must adjust accordingly.
 
@@ -57,12 +64,12 @@ To create one virtual machine from the template, we must follow these steps:
 - select **Generation 1** and click **Next**
 - if you want, change the value of the **Startup memory** to something bigger, for example to ***2048***. It will work with the default value as well
 - remove the tick from the **Use Dynamic Memory for this virtual machine** option and click **Next**
-- change the connection to ***Default Switch*** (*) and click **Next**
+- change the connection to ***Default Switch*** (1) and click **Next**
 - select the **Use an existing virtual hard disk** option 
 - click the **Browse** button to select the extracted virtual hard disk and then click **Next**
 - click **Finish**
 
-(*) On the typical default installation of Hyper-V on Windows 10/11 there is a **Default Switch** installed. If you find it missing on your installation, follow the steps in the **Troubleshooting** section.
+*(1) On the typical default installation of Hyper-V on Windows 10/11 there is a **Default Switch** installed. If you find it missing on your installation, follow the steps in the **Troubleshooting** section.*
 
 Before you start the machine, there is one more step to execute - to turn off the **automatic checkpoints**. Follow these steps:
 - select the virtual machine (while turned off)
@@ -106,3 +113,49 @@ To create one virtual machine from the template, we must follow these steps:
 - after a while the process will finish and the machine will appear in the library of the application
 
 Now, we are ready to power on our new virtual machine and start experimenting with it. All commands that we will need are in the **VM** section of the main menu. They are available in the context menu (select the machine and right-click on it) of the machine as well.
+
+## Troubleshooting
+
+**Hyper-V Default Switch missing**
+
+In general, it is difficult to recreate the default switch. Instead, we can create a basic NAT switch which will get us covered. The only drwaback is that it won't have any DHCP functionalities. So, we should manually configure the network settings of our virtual machines. Thus, in addition to the switch, we can create a small virtual machine that will act as DHCP server.
+
+Should you want to create just the switch and take care of the rest by yourself (for example, manual setup of IP addresses on the virtual machines), check this link <https://zahariev.pro/files/hyper-v-nat-switch.html> and follow the instructions there.
+
+Of course, we can go with the complete solution - switch + DHCP virtual machine. We can do it either manually, or use an automated solution.
+
+If you are looking for an automated solution, you check this procedure:
+- open a PowerShell session with **Run as administrator** option (right click on the icon and select the option)
+- navigate to the root folder
+        
+        cd c:\
+
+- change temporary the execution policy (you must confirm when asked)
+    
+        Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
+
+- download the setup script
+
+        Invoke-WebRequest -UseBasicParsing -Uri https://zahariev.pro/files/setup-hv-dhcp.ps1 -OutFile setup-hv-dhcp.ps1
+
+- source the script (this will make all the functions there available)
+
+        . .\setup-hv-dhcp.ps1
+
+- now, to create the switch and the special VM that will act as a DHCP server
+
+        Create-HVDHCPSetup
+
+- should you want to delete the artefacts, execute this instead
+
+        Remove-HVDHCPSetup
+
+As a result of the above, we will end up with a new switch (NAT vSwitch) and a tiny virtual machine (HVDHCP) that will act as DHCP server to the virtual machines that are connected to the switch. The default network settings are:
+- network - 192.168.99.0/24
+- default gateway - 192.168.99.1
+- DHCP server - 192.168.99.2
+- address range - 192.168.99.100 - 192.168.99.199
+
+The credentials for the tiny virtual machine are **root** / **Parolka1!**.
+
+Don't forget to link the virtual machines (either existing or new) to the newly created switch (NAT vSwitch).
