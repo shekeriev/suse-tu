@@ -1,19 +1,40 @@
 # Virtual Machines Instructions
 This document describes the requirements and the steps to follow in order to prepare for the exercises. The information is organized in the following sections:
-- Hardware and Software Requirements
+- Hardware Requirements
+- Software Requirements
 - Virtual Machines Repository
 - Hypervisor Instructions
 - Troubleshooting
 
 The most up to date version of this document can be found here: <https://github.com/shekeriev/suse-tu/tree/main/virtual-machines>
 
-## Hardware and Software Requirements
+## Hardware Requirements
+
 Your hardware is expected to meet the following requirements:
 - 64-bit Intel or AMD-based CPU capable of virtualization
 - at least 4 GB of RAM
 - at least 10 GB of free hard disk space
 
-In terms of software, you must be working on a recent version of Windows 10/11, macOS, or Linux distribution. In addition, you must have installed a recent version of **one** of the following virtualization solutions:
+You can check if your CPU supports virtualization using the following resources:
+- for Intel CPUs - <https://ark.intel.com/content/www/us/en/ark.html>
+- for AMD CPUs - <https://www.amd.com/en/products/specifications/processors>
+- any CPU - <https://www.cpu-world.com/>
+
+Even if your processor supports virtualization, the operating system still may not see and be able to use it. To check how the OS sees the capabilies of the CPU, you may use the following:
+- for Windows - use the CPU-Z utility (<https://www.cpuid.com/softwares/cpu-z.html>) or the Coreinfo utility (<https://docs.microsoft.com/en-us/sysinternals/downloads/coreinfo>)
+- for Linux distributions, execute the following command (if the result is greather than 0, you are good to go):
+
+        grep -E 'vmx|svm' /proc/cpuinfo | wc -l
+
+- for macOS on Intel CPU, execute the following command (look for VMX):
+
+        sysctl -a | grep machdep.cpu.features
+
+Do not forget to activate virtualization support in the BIOS if you haven't done so.
+
+## Software Requirements
+
+In terms of software, you must be working on a recent version of Windows 10/11, macOS, or Linux distribution. In addition, you must have installed a recent version of **one** of the following virtualization solutions (hypervisors):
 - **Microsoft Hyper-V** - a free addition to Windows (1). More information on how to activate it can be found here: <https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v>
 - **Oracle VirtualBox** - a free solution that can be installed on both Windows and most Linux distributions. Can be downloaded from here: <https://www.virtualbox.org/>
 - **VMware Workstation** - has free (***WMware Workstation Player***) and paid (***WMware Workstation Pro***) version. There is an option for a trial period of 30 days. Can be downloaded from here: <https://www.vmware.com/products/workstation-pro.html>
