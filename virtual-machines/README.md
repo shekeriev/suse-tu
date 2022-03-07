@@ -48,10 +48,12 @@ Virtual machine templates can be downloaded from here: <https://zahariev.pro/go/
 
 Each template file's name follows this structure ***xx-opensuse-leap-15.3[-gnome].yyy***. Where ***xx*** is the type of the virtualization solution and ***yyy*** is the type of the file - either ***zip*** or ***ova***.
 
-There are three sets of templates - one for every supported virtualization solution. They can be distinguished by the first two letters:
+There are three (1) sets of templates - one for every supported virtualization solution. They can be distinguished by the first two letters:
 - **hv** stands for **Microsoft Hyper-V**
 - **vb** stands for **Oracle VirtualBox**
 - **vm** stands for **VMware Workstation**
+
+*(1) There is one additional template ***kv-opensuse-leap-15.3.qcow2***. It is a text-only installation of openSUSE Leap 15.3. It is to be used with the KVM hypervisor.*
 
 Furthermore, for every solution, there are two different versions - one without a desktop environment (text-only mode) and one with a desktop environment (GNOME).
 
@@ -134,6 +136,23 @@ To create one virtual machine from the template, we must follow these steps:
 - after a while the process will finish and the machine will appear in the library of the application
 
 Now, we are ready to power on our new virtual machine and start experimenting with it. All commands that we will need are in the **VM** section of the main menu. They are available in the context menu (select the machine and right-click on it) of the machine as well.
+
+### KVM *
+
+This is an alternative hypervisor that those of you who are working on a Linux distribution can use. Keep in mind that it may be challenging in the beginning especially compared to Oracle VirtualBox.
+
+To create one virtual machine from the template, we must follow these steps:
+- download the template **kv-opensuse-leap-15.3.qcow2** locally and copy it to the folder where the virtual disks are stored (usually, it is /var/lib/libvirt/images/)
+- open the **Virtual Machine Manager** application and connect to your KVM
+- go to the main menu and select **File** > **New Virtual Machine**
+- select **Import existing disk image** and click **Forward**
+- click the **Browse** button, select the template and confirm with **Choose Volume**
+- if the field **Choose the operating system you are installing** does not get populated, type ***opensuse*** and select the closest match (for example, ***openSUSE Leap 15.1***) and click **Forward**
+- set the values for memory and CPU (1024 or 2048 for memory and 1 for CPU are more than enough) and click **Forward**
+- adjust the name of the machine and click **Finish**
+- after a while the process will finish and the machine will appear in the library of the application
+
+The VM will be started automatically. All commands that we will need are in the **VM** section of the main menu. They are available in the context menu (select the machine and right-click on it) of the machine as well.
 
 ## Troubleshooting
 
