@@ -152,7 +152,7 @@ To create one virtual machine from the template, we must follow these steps:
 - adjust the name of the machine and click **Finish**
 - after a while the process will finish and the machine will appear in the library of the application
 
-The VM will be started automatically. All commands that we will need are in the **VM** section of the main menu. They are available in the context menu (select the machine and right-click on it) of the machine as well.
+The VM will be started automatically. All commands that we will need are shown as buttons on the toolbar. They are available in the context menu (select the machine and right-click on it) of the machine as well.
 
 ## Troubleshooting
 
