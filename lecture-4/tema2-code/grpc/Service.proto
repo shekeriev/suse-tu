@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+service Calculator {
+	rpc isEven(Question) returns (Reply) {}
+}
+
+message Question {
+	optional int32 value = 1;
+}
+
+message Reply {
+	optional bool value = 1;
+}
