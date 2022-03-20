@@ -841,7 +841,7 @@ Finally, check that there are not any unwanted resources left:
 
 Two parts here:
  - slides - steps and requirements
- - demo - spin a small k3s based cluster; run an application; scale it up and down; stop a node; start the node back
+ - demo - spin a small k3s based cluster; run an application
 
 ### Create a three-node Kubernetes cluster based on k3s
 
@@ -854,7 +854,7 @@ Import three new machines, using the familiar procedure. You can shrink down the
 - node 2 - name it **k3s-2** and create one port forwarding rule - **10002 (host)** <- **22 (guest)**
 - node 3 - name it **k3s-3** and create one port forwarding rule - **10003 (host)** <- **22 (guest)**
 
-Now, add a second network adapter to them and make sure those adapters are in the same network (for example, k3s-net). Refer to this picture: 
+Now, add a second network adapter to them and make sure those adapters are in the same network (for example, ***k3s-net***). Refer to this picture: 
 
 ![](images/virtualbox-intnet.png)
 
@@ -891,27 +891,45 @@ Once done, continue with the next paragraph.
 
 Make sure that you are working on the **k3s1** machine.
 
-Let's convert it to a **k3s** host. Execute the following:
+First, stop the firewall. Normally, we won't do this, but today, our focus is on the cluster and not on the firewall. Execute this:
 
-`curl -sfL https://get.k3s.io | sudo sh - `
+`sudo systemctl disable --now firewalld`
 
+Now, we are ready to convert it to a **k3s** host. Execute the following:
 
-// todo: add other nodes
+`curl -sfL https://get.k3s.io | sudo sh -s - --advertise-address 192.168.222.101 --flannel-iface eth1 --write-kubeconfig-mode 644`
 
+As our machines have two network interfaces this will adjust the configuration to match our needs.
 
-It will take care of everything. In less than 30 seconds we will have a fully working k3s server.
+Once the installation is done, we are ready to set up the other two nodes. First, we must extract the token:
 
-There is one minor adjustment that need to do in order to be able to use it easy as a regular user. We must adjust the the permissions of the main configuration file to allow everyone to read it. Execute:
+`sudo cat /var/lib/rancher/k3s/server/node-token`
 
-`chmod go+r /etc/rancher/k3s/k3s.yaml`
+Copy the resulting value.
 
-Now, we can execute the following to check the installed version:
+Then log in to the second machine (**k3s2**) and first stop the firewall:
 
-`kubectl version`
+`sudo systemctl disable --now firewalld`
 
-This is the main utility that we will use to control our k3s installation. Usually, this is a separate binary, but in this case it is embedded into the k3s binary. Not that this will change anything for us. It is just an interesting fact.
+And then execute the following to make it part of our cluster:
 
-We can see the list of nodes (only one) of our k3s cluster with:
+`curl -sfL https://get.k3s.io | sudo sh -s - agent --server https://192.168.222.101:6443 --node-ip 192.168.222.102 --flannel-iface eth1 --token <token-value>`
+
+Now, log in to the second machine (**k3s3**) and first stop the firewall:
+
+`sudo systemctl disable --now firewalld`
+
+And then execute the following to make it part of our cluster:
+
+`curl -sfL https://get.k3s.io | sudo sh -s - agent --server https://192.168.222.101:6443 --node-ip 192.168.222.103 --flannel-iface eth1 --token <token-value>`
+
+We are done with this.
+
+#### Cluster exploration
+
+By now, we should have a fully working k3s cluster.
+
+Return on the first machine and ask for the list of nodes in our k3s cluster with:
 
 `kubectl get nodes`
  
@@ -953,15 +971,17 @@ Retrieve detailed information about the deployment:
 
 `kubectl describe deployment appb-deploy`
 
-List the services:
+List the pods ands services:
 
-`kubectl get services`
+`kubectl get pods, services`
 
 Open a browser tab on the host and navigate to http://localhost:8080 
 
 List the pods in the default namespace:
 
-`kubectl get pods`
+`kubectl get pods -o wide`
+
+We can see that they are working on different nodes.
 
 Copy a pod's name and create a session to it to explore it further (substitute appb-deploy-xxxxxxxxxx-xxxxx with the name). First, save the name in a variable:
 
@@ -980,7 +1000,7 @@ cat data/generated-data.txt
 tail -f data/generated-data.txt
 ```
 
-Once done exploring, type the ***exit*** command to close the session to the container.
+Once done exploring, type the ***exit*** command to close the session (first you may need to press **Ctrl+C** to stop the **tail** command) to the container.
 
 Now, explore the second container in the pod:
 
@@ -994,7 +1014,7 @@ cat /data/generated-data.txt
 tail -f /data/generated-data.txt
 ```
 
-Once done exploring, type the ***exit*** command to close the session to the container.
+Once done exploring, type the ***exit*** command to close the session (first you may need to press **Ctrl+C** to stop the **tail** command) to the container.
 
 Should we want, we can check the logs of one of the containers. For example, let's check them for the first container:
 
