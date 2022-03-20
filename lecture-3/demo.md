@@ -499,11 +499,141 @@ Two parts here:
 
 ### Create a single-node Kubernetes cluster based on k3s
 
+For this part we will use a clean machine. If the one from the previous part is still running, stop it. It is up to you to delete it as well.
 
-### Working with namespaces and pods
+Import a new machine, using the familiar procedure. Name it **k3s** for example. Forward the same set of ports but adjust the second rule to ***8080 (host) <- 30001 (guest)***. Then start it and open a SSH session to it. Once done, continue with the next paragraph.
+
+Let's turn our new clean virtual machine to a k3s host. It is as simple, as executing just one command. Execute the following:
+
+`curl -sfL https://get.k3s.io | sudo sh - `
+
+It will take care of everything. In less than 30 seconds we will have a fully working k3s server.
+
+There is one minor adjustment that need to do in order to be able to use it easy as a regular user. We must adjust the the permissions of the main configuration file to allow everyone to read it. Execute:
+
+`chmod go+r /etc/rancher/k3s/k3s.yaml`
+
+Now, we can execute the following to check the installed version:
+
+`kubectl version`
+
+This is the main utility that we will use to control our k3s installation. Usually, this is a separate binary, but in this case it is embedded into the k3s binary. Not that this will change anything for us. It is just an interesting fact.
+
+We can see the list of nodes (only one) of our k3s cluster with:
+
+`kubectl get nodes`
+ 
+Should we want more details about the nodes, we can execute this:
+
+`kubectl get nodes -o wide`
+
+Or ask for general cluster information with:
+
+`kubectl cluster-info`
+
+The list of all available commands can be seen by executing this:
+
+`kubectl`
+
+We have plenty of commands. Let's start using (some of) them.
+
+### Explore and get help 
+
+To retrieve a list of all pods (in the default namespace), we can execute:
+
+`kubectl get pods`
+
+It appears that there aren't many (in fact, none). We can modify this command to get the pods in all namespaces: 
+
+`kubectl get pods --all-namespaces`
+
+Now, we see a few. We can go even further and try to retrieve a list of all resources in all namespaces:
+
+`kubectl get all --all-namespaces`
+
+We can use a shorter variant of the **--all-namespaces** option by substituting it with **-A**.
+
+How can we know what resources are supported? We can ask for this by executing: 
+
+`kubectl api-resources`
+
+Then perhaps, we want to know th supported API versions. The answer is a matter of executing this: 
+
+`kubectl api-versions`
+
+Let's take for example the **pod**. How can we know what instructions or fields should we pass in order to use one? We can ask for information about the POD resource with:
+
+`kubectl explain pod`
+
+The field that we are most interested in is the **spec** field. So, let's get information about it:
+
+`kubectl explain pod.spec`
+
+Wow, quite a long list. Perhaps, we should ask for the required fields only. So, let's filter for those fields with:
+
+`kubectl explain pod.spec | grep required`
+
+It appears that only one field (**containers**) is required. So, let's ask for more information about it:
+
+`kubectl explain pod.spec.containers` 
+
+Again, quite a long list. Should we need, we know how to filter it.
+
+### Work with pods
+
+We have two ways to work with resources in **Kubernetes** - **imperative** and **declarative**. With the first, we are saying exactly what should be done. And with the second, we are saying what we want to be the state of the cluster or a resource and letting **Kubernetes** figure out how to do it.
+
+Let's try the imperative creation of a pod. Execute the following command to create an NGINX based pod:
+
+`kubectl run nginx-pod --image nginx`
+
+Then, check the result:
+
+`kubectl get pods`
+
+Okay. Now, we can remove the pod with:
+
+`kubectl delete pod nginx-pod`
+
+There is something in between and it is imperative creation with configuration (or manifest) file. Let's first check the contents of the file:
+
+`cat 1-appa-pod.yml`
+
+Now, we can create the pod in an imperative fashion but using a file:
+
+`kubectl create -f 1-appa-pod.yml`
+
+And of course, check the result:
+
+`kubectl get pods`
+
+Sometimes we wan to see detailed information about the pod. If this is the case, we can execute: 
+
+`kubectl describe pod appa-pod`
+
+Okay, what if we decided that we want to change something? Can we just send an updated configuration of the resource to the cluster? Sure, we can.
+
+First, compare the initial configuration file with its extended version:
+
+`vimdiff: vimdiff 1-appa-pod.yml 2-appa-pod-ext.yml`
+
+There is just one difference. We are adding a label to the pod.
+
+Now, apply the changes coming from the extended file with:
+
+`kubectl apply -f 2-appa-pod-ext.yml`
+
+Note the warning. It is because of the imperative creation of the initial version of the resource.
+
+Now, let's display detailed information about the pod again: 
+
+`kubectl describe pod appa-pod`
+
+Explore the labels section. And as we can see, the it changed. 
+
+### Work with services
 
 
-### Working with pods and services
 
 
 ## Kubernetes cluster with k3s (*)
@@ -511,6 +641,10 @@ Two parts here:
 Two parts here:
  - slides - steps and requirements
  - demo - spin a small k3s based cluster; run an application; scale it up and down; stop a node; start the node back
+
+ ### Create a three-node Kubernetes cluster based on k3s
+
+
 
 ## Homework
  - create image (base it on an image that offers both PHP and Apache)
