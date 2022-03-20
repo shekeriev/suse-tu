@@ -485,11 +485,15 @@ Here we saw two additional topics/techniques:
 - networks - check here: https://docs.docker.com/network/
 - environment variables - check here: https://docs.docker.com/engine/reference/commandline/run/ 
 
+### Clean up
+
 Do not forget to stop and remove the containers of the application together with the network by executing these commands:
 
 `docker container rm --force web db`
 
 `docker network rm bgapp`
+
+We can go even further and delete all images that we do not need any more and all stopped containers. I will leave this to you to experiment with. ;)
 
 ## Getting to know Kubernetes with k3s
 
@@ -536,6 +540,16 @@ The list of all available commands can be seen by executing this:
 `kubectl`
 
 We have plenty of commands. Let's start using (some of) them.
+
+One last step. Clone the repository to get a local copy of the exercise files:
+
+`git clone https://github.com/shekeriev/suse-tu`
+
+And enter the folder with the files:
+
+`cd suse-tu/lecture-3/demo-files`
+
+Now, we are ready to continue our exploration.
 
 ### Explore and get help 
 
@@ -607,7 +621,9 @@ And of course, check the result:
 
 `kubectl get pods`
 
-Sometimes we wan to see detailed information about the pod. If this is the case, we can execute: 
+Wait a while, until its status change to **Running**. Rerun the command a few times.
+
+Sometimes we want to see detailed information about the pod. If this is the case, we can execute: 
 
 `kubectl describe pod appa-pod`
 
@@ -615,9 +631,11 @@ Okay, what if we decided that we want to change something? Can we just send an u
 
 First, compare the initial configuration file with its extended version:
 
-`vimdiff: vimdiff 1-appa-pod.yml 2-appa-pod-ext.yml`
+`vimdiff 1-appa-pod.yml 2-appa-pod-ext.yml`
 
-There is just one difference. We are adding a label to the pod.
+There is just one difference. We are adding a pair of labels to the pod.
+
+Close the comparison utility by pressing the **Esc** key, then enter **:qa** and hit **Enter**.
 
 Now, apply the changes coming from the extended file with:
 
@@ -629,12 +647,195 @@ Now, let's display detailed information about the pod again:
 
 `kubectl describe pod appa-pod`
 
-Explore the labels section. And as we can see, the it changed. 
+Explore the labels section. And as we can see, it changed. 
 
 ### Work with services
 
+Our pod hosts a web server but we cannot access it. Is there a solution to this? Yes, there is. We can expose the service running on the pod and make it reachable on the IP address of our single-node cluster. Execute this:
 
+`kubectl expose pod appa-pod --name=appa-svc --target-port=80 --type=NodePort`
 
+Let's display information about the service:
+
+`kubectl get svc appa-svc`
+
+We can ask for detailed information about the service:
+
+`kubectl describe svc appa-svc`
+
+Copy the appa-svc NodePort value and execute the following command:
+
+`curl http://localhost:<node-port>`
+
+Okay. Our application is working. 
+
+So this port was auto-generated. This makes it difficult to know in advance and create a port forwarding rule, which is the only way to access the application on the host in our case. Of course, there are solutions to this. One of them is to add/change a port forwarding rule, once we know the actual port. Other solution is to prepare a special manifest for the service. This will allow us to control the value of the NodePort.
+
+Let's remove the service first:
+
+`kubectl delete svc appa-svc`
+
+Let's explore the configuration file that we will use to create a similar service:
+
+`cat 3-appa-svc.yml`
+
+Now, create the service in a declarative manner: 
+
+`kubectl apply -f 3-appa-svc.yml`
+
+Go on and display detailed information about the service:
+
+`kubectl describe svc appa-svc`
+
+Note the Endpoints position. It contains a reference to the pod. Now, the NodePort has a fixed and known value. So, we can use it to access the application on the host (we should have the forwarding rule set). Open a browser tab on the host and navigate to http://localhost:8080
+
+And here it is. Our application. It works.
+
+Let's challenge the system and remove the pod:
+
+`kubectl delete pod appa-pod`
+
+Now, refresh the open browser tab. The "application" should not be reachable anymore.
+
+Show detailed information about the service:
+
+`kubectl describe svc appa-svc`
+
+Note the **Endpoints** position. It is empty now. No pods are served by the service. We deleted the only one that matched the label selectors.
+
+## Work with deployments
+
+As with the pods and services, we can use imperative approach to create deployments. Let's create a deployment with two pod replicas: 
+
+`kubectl create deployment appa-deploy --image=shekeriev/k8s-appa:v1 --replicas=2 --port=80`
+
+Ask for information about the deployment: 
+
+`kubectl get deployment`
+
+And then ask for more details: 
+
+`kubectl describe deployment appa-deploy`
+
+Let's scale up the deployment to ten pod replicas:
+
+`kubectl scale deployment appa-deploy --replicas=10`
+
+And watch how the pod replicas are being created: 
+
+`kubectl get pods -w`
+
+Press **Crl+C** to stop the pods monitoring process.
+
+We are done with this one. Remove it together with the replicated pods:
+
+`kubectl delete deployment appa-deploy`
+
+Now, let's explore the configuration file that will be used to create a deployment (more or less the same):
+
+`cat 4-appa-deploy-v1.yml`
+
+Create the deployment in a declarative manner: 
+
+`kubectl apply -f 4-appa-deploy-v1.yml`
+
+Watch while the pods are being created: 
+
+`kubectl get pod -w`
+
+Press **Crl+C** to stop the pods monitoring process.
+
+Then ask for deployment status
+
+`kubectl get deployment`
+
+And for a detailed deployment status
+
+`kubectl get deployment -o wide`
+
+Note the **SELECTOR** column content. 
+
+Return to the browser tab that we opened earlier. Refresh it a few times and pay attention to the bottom line. It changes with each refresh. So we are being served by different pods. This is cool.
+
+Let's upgrade our "application" to a newer version. For this, it is enough to change a single line of our deployment manifest - specify a new image tag.
+
+Compare the two versions of the deployment:
+
+`vimdiff 4-appa-deploy-v1.yml 5-appa-deploy-v2.yml`
+
+Close the comparison utility by pressing the **Esc** key, then enter **:qa** and hit **Enter**.
+
+Before we start the actual upgrade, let's explore a few other things. Retrieve detailed information about the current deployment: 
+
+`kubectl describe deployment appa-deploy`
+
+Then list current replica sets: 
+
+`kubectl get rs`
+
+There is a reference to one replica set that created the 10 instances of the pod. Retrieve detailed information about the only replica set (if there were many, we should have specified the name as well) by executing: 
+
+`kubectl describe rs`
+
+Pick the ID of one of the listed pods and delete it to see what happens:
+
+`kubectl delete pod appa-deploy-xxxxxxxxx-yyyyy`
+
+Then ask for the pods with:
+
+`kubectl get pods`
+
+And again for replica set details with:
+
+`kubectl describe rs`
+
+As you can see a new pod gets created. Why? Because we stated that we want 10 replicas. Then, by deleting one, we changed the current state (9) and it differs from the desired state (10). One of the main tasks of the cluster and in this case the replica set is to watch and apply corrective actions.
+
+Now, it is time to apply the newer deployment configuration. This time we will record the changes: 
+
+`kubectl apply -f 5-appa-deploy-v2.yml --record`
+
+You will see a flag deprecation message. So, this means that we should not rely on this functionality (the **--record**) flag as it will be dropped in future versions. After all, all it does, is ot record information for us. The process will be the same even if do not set the flag.
+
+Watch the deployment rollout: 
+
+`kubectl rollout status deployment appa-deploy`
+
+It is done one replica at a time. 
+
+Refresh the open browser tab. You will notice that some of the requests will be served by the old version of the "application" and others by the new one. 
+
+Now, let's retrieve the history of the deployment: 
+
+`kubectl rollout history deployment appa-deploy`
+
+Let's imagine that we want to undo the latest deployment and return the the previous version of the "application". Execute the following: 
+
+`kubectl rollout undo deployment appa-deploy --to-revision=1`
+
+Watch the rollback process: 
+
+`kubectl rollout status deployment appa-deploy`
+
+Refresh the open browser tab. You will notice that some of the requests will be served by the old version of the "application" and others by the new one.
+
+Once done, retrieve the history of the deployment: 
+
+`kubectl rollout history deployment appa-deploy`
+
+### Clean up
+
+Remove the deployment together with the replica set and all the pods: 
+
+`kubectl delete deployment appa-deploy`
+
+Then, remove the service: 
+
+`kubectl delete service appa-svc`
+
+Finally, check that there are not any unwanted resources left: 
+
+`kubectl get all --all-namespaces`
 
 ## Kubernetes cluster with k3s (*)
 
