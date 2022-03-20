@@ -1,6 +1,12 @@
 # Introduction to containers
 
+A multi-part session that aims to cover various basic concepts and techniques when working with containers. The journey starts with a single **Docker** host. Then, once the basics are covered, will move on to a single **k3s** host. It will be used to do a transition to the **Kubernetes** way of working with containers. Finally, if the time allows, a three-node **k3s** cluster will be created.
+
+All sections marked with (*) are not mandatory.
+
 ## Introduction to containers with Docker
+
+Two parts here:
  - slides - why containers; containers vs virtual machines; types of containers; Docker; workflow; Dockerfile
  - demo - install Docker; basic post-config; run a few containers; create image; run a multi-container application
  
@@ -357,18 +363,153 @@ Stop and remove the container:
 
 Now that we are sure in our code, we must create one more file. This is the **Dockerfile** file which will contain the instructions for the creation of our container image.
 
-Start the 
+Start the **nano** editor and create a new **Dockerfile**:
+
+`nano Dockerfile`
+
+Now, type in or paste the following text:
+
+```Dockerfile
+# The base image for our image
+FROM php:apache
+
+# Set metadata about who is the author of the image
+LABEL author='Student Name <student@university.edu>'
+
+# Copy the project files
+COPY web/ /var/www/html/
+```
+
+Press **Ctrl+O** to save the file and confirm with **Enter**. Once done, press **Ctrl+X** to close the file. 
+
+This is how our **docker-image** folder should look like:
+
+```
+docker-image/
+├── Dockerfile
+└── web
+    └── index.php
+```
+
+Next, we must build our image. For this, we should execute the following:
+
+`docker image build -t myimage .`
+
+Please note that the above command should be executed in the folder where we have the **Dockerfile**.
+
+Now, let's see if our image appears in the list of images:
+
+`docker image ls`
+
+Yes, here it is. Let's start a container out of it:
+
+`docker container run -d --name web -p 8080:80 myimage`
+
+Now, check the list of the running containers:
+
+`docker container ls`
+
+And use the **curl** command to access the web page in the container:
+
+`curl http://localhost:8080`
+
+It works. The feeling is good. :)
+
+Stop and remove it:
+
+`docker container rm --force web`
+
+There is one more step. Which is not mandatory but we will execute it. We may want to publish our image to a registry. This will allow us to use it on other **Docker** hosts and/or other people may use it as well (if we publish it to a public repository).
+
+We will use the **Docker Hub** registry. Go there (https://hub.docker.com/) and create an account for you. It is a simple process with just a few steps.
+
+Once done, return in the terminal session of our virtual machine and execute the following command to authenticate (or log in) to your account in **Docker Hub**:
+
+`docker login`
+
+Enter the name and the password you used during the registration.
+
+Now, we must **tag** our image against our account in **Docker Hub**. Execute the following command:
+
+`docker image tag myimage <account>/myimage`
+
+Where ***<account>*** is your username in **Docker Hub**. For example, as mine is ***shekeriev***, the above command will become:
+
+`docker image tag myimage shekeriev/myimage`
+
+Now, if we ask for the list of local images:
+
+`docker image ls`
+
+We will see two images with the same ID. This is by design. As the two names both point to the same image.
+
+The final step is to publish (or **push**) the image to the registry. Execute the following:
+
+`docker image push <account>/myimage`
+
+If you open the web page of Docker Hub and go to your account, you will see the image there. Congratulations! :)
+
+Should we want, we can use it to run a container just like with every other image. We can execute:
+
+`docker container run -d --name web -p 8080:80 <account>/myimage`
+
+It should work. Once done, do not forget to stop it and remove it.
 
 ### Run a multi container application (*)
 
- 
+Perhaps, you are curious how we can run a multi-container application. Let's see one possible way of doing this.
+
+This is a two-container application. It shows the top 10 cities by population in Bulgaria. One of the containers is a web application and the other is a database.
+
+First, we should create an isolated network to allow the containers to speak to each other:
+
+`docker network create bgapp`
+
+Then, we can start the database container with:
+
+`docker container run -d --name db --net bgapp -e MYSQL_ROOT_PASSWORD=12345 shekeriev/bgapp-db:latest`
+
+And then, we can start the web container with:
+
+`docker container run -d --name web --net bgapp -p 8080:80 shekeriev/bgapp-web:embedded`
+
+Check the list of running containers with:
+
+`docker container ls`
+
+Open a browser tab on the host and navigate to http://localhost:8080
+
+It works. Now, besides **Docker**, you know the top 10 cities in Bulgaria by population. :)
+
+Here we saw two additional topics/techniques:
+- networks - check here: https://docs.docker.com/network/
+- environment variables - check here: https://docs.docker.com/engine/reference/commandline/run/ 
+
+Do not forget to stop and remove the containers of the application together with the network by executing these commands:
+
+`docker container rm --force web db`
+
+`docker network rm bgapp`
+
 ## Getting to know Kubernetes with k3s
 
+Two parts here:
  - slides - why orchestration; what is Kubernetes; Kubernetes components; Kubernetes distributions; SUSE Rancher products; k3s; basic objects/resources
- - demo - spin a single k3s instance; introduction to some of the basic resources - namespace, pod, service, replicaset, deployment; labels and selectors
+ - demo - spin a single k3s instance; introduction to some of the basic resources - namespaces, pods, services; labels and selectors
 
-## Kubernetes cluster with k3s
- - slides 
+### Create a single-node Kubernetes cluster based on k3s
+
+
+### Working with namespaces and pods
+
+
+### Working with pods and services
+
+
+## Kubernetes cluster with k3s (*)
+
+Two parts here:
+ - slides - steps and requirements
  - demo - spin a small k3s based cluster; run an application; scale it up and down; stop a node; start the node back
 
 ## Homework
