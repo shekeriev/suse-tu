@@ -843,9 +843,170 @@ Two parts here:
  - slides - steps and requirements
  - demo - spin a small k3s based cluster; run an application; scale it up and down; stop a node; start the node back
 
- ### Create a three-node Kubernetes cluster based on k3s
+### Create a three-node Kubernetes cluster based on k3s
+
+For this part we will use three clean machines. If the one from the previous part is still running, stop it. It is up to you to delete it as well.
+
+#### Import machines
+
+Import three new machines, using the familiar procedure. You can shrink down their memory to 1GB or use just two machines if you are short on resources. They should meet the following requirements:
+- node 1 - name it **k3s-1** and create two port forwarding rules - **10001 (host)** <- **22 (guest)** and **8080 (host) <- 30001 (guest)**
+- node 2 - name it **k3s-2** and create one port forwarding rule - **10002 (host)** <- **22 (guest)**
+- node 3 - name it **k3s-3** and create one port forwarding rule - **10003 (host)** <- **22 (guest)**
+
+Now, add a second network adapter to them and make sure those adapters are in the same network (for example, k3s-net). Refer to this picture: 
+
+![](images/virtualbox-intnet.png)
+
+Then start the machines and open SSH session to each one of them in a separate window/terminal:
+- k3s-1 -> `ssh -p 10001 user@localhost`
+- k3s-2 -> `ssh -p 10002 user@localhost`
+- k3s-3 -> `ssh -p 10003 user@localhost`
+
+#### Configure all three machines
+
+Make sure that you are connected to the **k3s1** machine. Now execute the following to do a basic configuration:
+
+`sudo yast2`
+
+Use the arrow keys to navigate, **Tab** to jump between controls and **Enter** to confirm. You may use also **Alt** key in combination with highlighted letter (the register doesn't matter) to invoke commands.
+
+Navigate to **System** > **Network Settings**.
+
+While in the **Overview** screen, select the **eth1** network adapter and press **Alt+I**. Next, navigate to **IP Address** and enter ***192.168.222.101***. In **Subnet Mask** enter ***/24***. And in **Hostname** enter ***k3s-1***. Press **Alt+N** to confirm the changes.
+
+Once back in the **Overview** section, switch to **Hostname/DNS** section and enter ***k3s-1*** in the **Static Hostname** field. Then change the **Set Hostname via DHCP** to ***no***.
+
+Press **Alt+O** to confirm the changes and close this screen.
+
+Once in the main menu, press **Alt+Q** to close the application. Then, close the session and reopen it.
+
+Repeat the same procedure on the other virtual machines - **k3s2** and **k3s3**. Of course, adjust their addresses and names:
+- **k3s2** -> IP: ***192.168.222.102*** and hostname: ***k3s-2***
+- **k3s3** -> IP: ***192.168.222.103*** and hostname: ***k3s-3***
+
+Once done, continue with the next paragraph.
+
+#### Install k3s and create the cluster
+
+Make sure that you are working on the **k3s1** machine.
+
+Let's convert it to a **k3s** host. Execute the following:
+
+`curl -sfL https://get.k3s.io | sudo sh - `
 
 
+// todo: add other nodes
+
+
+It will take care of everything. In less than 30 seconds we will have a fully working k3s server.
+
+There is one minor adjustment that need to do in order to be able to use it easy as a regular user. We must adjust the the permissions of the main configuration file to allow everyone to read it. Execute:
+
+`chmod go+r /etc/rancher/k3s/k3s.yaml`
+
+Now, we can execute the following to check the installed version:
+
+`kubectl version`
+
+This is the main utility that we will use to control our k3s installation. Usually, this is a separate binary, but in this case it is embedded into the k3s binary. Not that this will change anything for us. It is just an interesting fact.
+
+We can see the list of nodes (only one) of our k3s cluster with:
+
+`kubectl get nodes`
+ 
+Should we want more details about the nodes, we can execute this:
+
+`kubectl get nodes -o wide`
+
+Or ask for general cluster information with:
+
+`kubectl cluster-info`
+
+### A file with multiple resources and a pod with multiple containers
+
+Clone the repository to get a local copy of the exercise files:
+
+`git clone https://github.com/shekeriev/suse-tu`
+
+And enter the folder with the files:
+
+`cd suse-tu/lecture-3/demo-files`
+
+Now, we are ready to continue our exploration.
+
+Explore the configuration file:
+
+`cat 6-appb.yml`
+
+Note how the two resource (deployment and service) are separated by "---". 
+
+Create the resources described in the file: 
+
+`kubectl apply -f 6-appb.yml`
+
+List the deployments:
+
+`kubectl get deployment`
+
+Retrieve detailed information about the deployment: 
+
+`kubectl describe deployment appb-deploy`
+
+List the services:
+
+`kubectl get services`
+
+Open a browser tab on the host and navigate to http://localhost:8080 
+
+List the pods in the default namespace:
+
+`kubectl get pods`
+
+Copy a pod's name and create a session to it to explore it further (substitute appb-deploy-xxxxxxxxxx-xxxxx with the name). First, save the name in a variable:
+
+`export POD=appb-deploy-xxxxxxxxxx-xxxxx`
+
+Now, explore the first container in the pod: 
+
+`kubectl exec -it $POD --container appb-container-1st -- bash`
+
+Execute the following commands to explore it a bit:
+
+```
+ls
+cat index.php
+cat data/generated-data.txt
+tail -f data/generated-data.txt
+```
+
+Once done exploring, type the ***exit*** command to close the session to the container.
+
+Now, explore the second container in the pod:
+
+`kubectl exec -it $POD --container appb-container-2nd -- sh`
+
+Explore a bit by executing:
+
+```
+ls
+cat /data/generated-data.txt
+tail -f /data/generated-data.txt
+```
+
+Once done exploring, type the ***exit*** command to close the session to the container.
+
+Should we want, we can check the logs of one of the containers. For example, let's check them for the first container:
+
+`kubectl logs $POD --container appb-container-1st`
+
+By now, we should have a basic understanding of some of the basic "moving parts" in **Kubernetes**. This is a huge topic and demands for further exploration both in width and depth. Everything with its time. ;)
+
+### Clean up 
+
+Remove the resources created in this part:
+
+`kubectl delete -f 6-appb.yml`
 
 ## Homework
  - create image (base it on an image that offers both PHP and Apache)
