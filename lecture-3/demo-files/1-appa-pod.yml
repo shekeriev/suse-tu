@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: appa-pod
+spec:
+  containers:
+  - name: appa-container
+    image: shekeriev/k8s-appa:v1
+    ports:
+    - containerPort: 80

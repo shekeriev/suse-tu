@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appb-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels: 
+      app: appb
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: appb
+    spec:
+      volumes:
+      - name: data
+        emptyDir: {}
+      containers:
+      - name: appb-container-1st
+        image: shekeriev/k8s-appb
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: data
+          mountPath: /var/www/html/data
+        ports:
+        - containerPort: 80 
+      - name: appb-container-2nd
+        image: alpine
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        command: ["/bin/sh", "-c"]
+        args:
+          - while true; do
+              date >> /data/generated-data.txt;
+              sleep 10;
+            done
+        
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: appb-svc
+  labels:
+    app: appb
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    nodePort: 30001
+    protocol: TCP
+  selector:
+    app: appb
