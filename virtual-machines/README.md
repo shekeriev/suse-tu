@@ -1,5 +1,7 @@
 # Virtual Machines Instructions
+
 This document describes the requirements and the steps to follow in order to prepare for the exercises. The information is organized in the following sections:
+
 - Hardware Requirements
 - Software Requirements
 - Virtual Machines Repository
@@ -11,16 +13,19 @@ The most up to date version of this document can be found here: <https://github.
 ## Hardware Requirements
 
 Your hardware is expected to meet the following requirements:
+
 - 64-bit Intel or AMD-based CPU capable of virtualization
 - at least 4 GB of RAM
 - at least 10 GB of free hard disk space
 
 You can check if your CPU supports virtualization using the following resources:
+
 - for Intel CPUs - <https://ark.intel.com/content/www/us/en/ark.html>
 - for AMD CPUs - <https://www.amd.com/en/products/specifications/processors>
 - any CPU - <https://www.cpu-world.com/>
 
 Even if your processor supports virtualization, the operating system still may not see and be able to use it. To check how the OS sees the capabilies of the CPU, you may use the following:
+
 - for Windows - use the CPU-Z utility (<https://www.cpuid.com/softwares/cpu-z.html>) or the Coreinfo utility (<https://docs.microsoft.com/en-us/sysinternals/downloads/coreinfo>)
 - for Linux distributions, execute the following command (if the result is greather than 0, you are good to go):
 
@@ -35,6 +40,7 @@ Do not forget to activate virtualization support in the BIOS if you haven't done
 ## Software Requirements
 
 In terms of software, you must be working on a recent version of Windows 10/11, macOS, or Linux distribution. In addition, you must have installed a recent version of **one** of the following virtualization solutions (hypervisors):
+
 - **Microsoft Hyper-V** - a free addition to Windows (1). More information on how to activate it can be found here: <https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v>
 - **Oracle VirtualBox** - a free solution that can be installed on both Windows and most Linux distributions. Can be downloaded from here: <https://www.virtualbox.org/>
 - **VMware Workstation** - has free (***WMware Workstation Player***) and paid (***WMware Workstation Pro***) version. There is an option for a trial period of 30 days. Can be downloaded from here: <https://www.vmware.com/products/workstation-pro.html>
@@ -44,11 +50,13 @@ In terms of software, you must be working on a recent version of Windows 10/11, 
 In general, if you are wondering which one to select, go for Oracle VirtualBox. It is simple, free, and offers broad support for both host and guest operating systems.
 
 ## Virtual Machines Repository
+
 Virtual machine templates can be downloaded from here: <https://zahariev.pro/go/suse-tu>
 
 Each template file's name follows this structure ***xx-opensuse-leap-15.3[-gnome].yyy***. Where ***xx*** is the type of the virtualization solution and ***yyy*** is the type of the file - either ***zip*** or ***ova***.
 
 There are three (1) sets of templates - one for every supported virtualization solution. They can be distinguished by the first two letters:
+
 - **hv** stands for **Microsoft Hyper-V**
 - **vb** stands for **Oracle VirtualBox**
 - **vm** stands for **VMware Workstation**
@@ -60,13 +68,16 @@ Furthermore, for every solution, there are two different versions - one without 
 You may wonder how to choose and which one to pick. First, you must pick the set that matches your installed virtualization solution. Then, it is a matter of personal preference - with or without a graphical interface. For the purpose of the current initiative, each one will do the job. The text-based template is the preferred one because it is smaller and requires fewer resources.
 
 Credentials for the virtual machines are:
+
 - **root** with password set to **linux**
 - **user** with password set to **linux**
 
 ## Hypervisor Instructions
+
 Below you can find the instructions to import a template for your virtualization solution.
 
 In the next sections, the following is assumed:
+
 - the host operating system is **Windows 10**
 - the virtual machines are stored in **C:\VM**
 - we are working with the template without a graphical environment
@@ -77,6 +88,7 @@ If your setup is different, then you must adjust accordingly.
 ### Microsoft Hyper-V
 
 To create one virtual machine from the template, we must follow these steps:
+
 - download the template **hv-opensuse-leap-15.3.zip** locally
 - extract its contents to the folder where the virtual machines are stored
 - rename the resulting file **hv-opensuse-leap-15.3.vhdx** to ***VM1.vhdx***
@@ -88,13 +100,14 @@ To create one virtual machine from the template, we must follow these steps:
 - if you want, change the value of the **Startup memory** to something bigger, for example to ***2048***. It will work with the default value as well
 - remove the tick from the **Use Dynamic Memory for this virtual machine** option and click **Next**
 - change the connection to ***Default Switch*** (1) and click **Next**
-- select the **Use an existing virtual hard disk** option 
+- select the **Use an existing virtual hard disk** option
 - click the **Browse** button to select the extracted virtual hard disk and then click **Next**
 - click **Finish**
 
 *(1) On the typical default installation of Hyper-V on Windows 10/11 there is a **Default Switch** installed. If you find it missing on your installation, follow the steps in the **Troubleshooting** section.*
 
 Before you start the machine, there is one more step to execute - to turn off the **automatic checkpoints**. Follow these steps:
+
 - select the virtual machine (while turned off)
 - go to the main menu and select **Action** > **Settings**
 - scroll down to **Management** and select **Checkpoints**
@@ -103,6 +116,7 @@ Before you start the machine, there is one more step to execute - to turn off th
 - confirm the changes by clicking on the **OK** button
 
 Now, we are ready to power on our new virtual machine and start experimenting with it. The typical interactions with the virtual machine include:
+
 - power it on - select the machine in the list and from the main menu select **Action** > **Start**
 - connect to it - select the machine in the list and from the main menu select **Action** > **Connect**
 - power if off - select the machine in the list and from the main menu select **Action** > **Shut Down**
@@ -112,6 +126,7 @@ The above commands plus many more are available in the context menu (select the 
 ### Oracle VirtualBox
 
 To create one virtual machine from the template, we must follow these steps:
+
 - download the template **vb-opensuse-leap-15.3.ova** locally
 - start the **Oracle VM VirtualBox** application
 - go to the main menu and select **File** > **Import Appliance**
@@ -127,6 +142,7 @@ Now, we are ready to power on our new virtual machine and start experimenting wi
 ### VMware Workstation
 
 To create one virtual machine from the template, we must follow these steps:
+
 - download the template **vm-opensuse-leap-15.3.ova** locally
 - start the **VMware Workstation** application
 - go to the main menu and select **File** > **Open**
@@ -142,6 +158,7 @@ Now, we are ready to power on our new virtual machine and start experimenting wi
 This is an alternative hypervisor that those of you who are working on a Linux distribution can use. Keep in mind that it may be challenging in the beginning especially compared to Oracle VirtualBox.
 
 To create one virtual machine from the template, we must follow these steps:
+
 - download the template **kv-opensuse-leap-15.3.qcow2** locally and copy it to the folder where the virtual disks are stored (usually, it is /var/lib/libvirt/images/)
 - open the **Virtual Machine Manager** application and connect to your KVM
 - go to the main menu and select **File** > **New Virtual Machine**
@@ -165,6 +182,7 @@ Should you want to create just the switch and take care of the rest by yourself 
 Of course, we can go with the complete solution - switch + DHCP virtual machine. We can do it either manually, or use an automated solution.
 
 If you are looking for an automated solution, you check this procedure:
+
 - open a PowerShell session with **Run as administrator** option (right click on the icon and select the option)
 - navigate to the root folder
         
@@ -191,6 +209,7 @@ If you are looking for an automated solution, you check this procedure:
         Remove-HVDHCPSetup
 
 As a result of the above, we will end up with a new switch (NAT vSwitch) and a tiny virtual machine (HVDHCP) that will act as DHCP server to the virtual machines that are connected to the switch. The default network settings are:
+
 - network - 192.168.99.0/24
 - default gateway - 192.168.99.1
 - DHCP server - 192.168.99.2

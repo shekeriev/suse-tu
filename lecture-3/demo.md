@@ -4,15 +4,19 @@ A multi-part session that aims to cover various basic concepts and techniques wh
 
 All sections marked with (*) are not mandatory.
 
+The most up to date version of this document can be found here: <https://github.com/shekeriev/suse-tu/tree/main/lecture-3/demo.md>
+
 ## Introduction to containers with Docker
 
 Two parts here:
- - slides - why containers; containers vs virtual machines; types of containers; Docker; workflow; Dockerfile
- - demo - install Docker; basic post-config; run a few containers; create image; run a multi-container application
- 
+
+* slides - why containers; containers vs virtual machines; types of containers; Docker; workflow; Dockerfile
+* demo - install Docker; basic post-config; run a few containers; create image; run a multi-container application
+
 ### Create virtual machine from template (VirtualBox)
 
 First, we must create the virtual machine using one of the provided templates:
+
 1) Start **VirtualBox**
 2) Go to **File** > **Import Appliance**
 3) Click the **Browse** button and navigate to the downloaded template
@@ -38,23 +42,27 @@ Let's create two - one for the SSH communication and one for accessing WEB servi
 4) While in **Adapter 1** settings, click the **Advanced** option
 5) Then click the **Port Forwarding** button
 6) To add a rule, click on the little green button in the top right corner of the window
-7) Change rule's attributes to 
-   - Name -> ***SSH***
-   - Protocol -> ***TCP***
-   - Host Port -> ***2222***
-   - Guest Port -> ***22***
-8) Add one more rule and change its attributes to 
-   - Name -> ***WEB***
-   - Protocol -> ***TCP***
-   - Host Port -> ***8080***
-   - Guest Port -> ***8080***
+7) Change rule's attributes to
+
+* Name -> ***SSH***
+* Protocol -> ***TCP***
+* Host Port -> ***2222***
+* Guest Port -> ***22***
+
+8) Add one more rule and change its attributes to
+
+* Name -> ***WEB***
+* Protocol -> ***TCP***
+* Host Port -> ***8080***
+* Guest Port -> ***8080***
+
 9) Click **OK** to close the **Port Forwarding Rules** window and then once again **OK** to close virtual machine' settings window
 
 ### Start the virtual machine and establish a connection
 
 We are ready to begin our journey. With **VirtualBox** started, select the virtual machine and go to **Machine** > **Start** > **Normal Start**.
 
-Now, after the machine is ready, we can work on its **console** (the window that appeared) or open a **SSH session** to it. The first option doesn't require any additional software but has its limitations. The main one being that we cannot use copy-paste between the host and the virtual machine. So, we will go with the second approach. But first, we must make sure that we have a **SSH client** installed. With modern versions of **Windows 10** we have **OpenSSH** installed by default. This applies to **macOS** and all **Linux** distributions as well. If we have an older version of **Windows** or we just want to try something else, we can install the **PuTTY** client (https://www.putty.org/) which happens to be one of the most popular options.
+Now, after the machine is ready, we can work on its **console** (the window that appeared) or open a **SSH session** to it. The first option doesn't require any additional software but has its limitations. The main one being that we cannot use copy-paste between the host and the virtual machine. So, we will go with the second approach. But first, we must make sure that we have a **SSH client** installed. With modern versions of **Windows 10** we have **OpenSSH** installed by default. This applies to **macOS** and all **Linux** distributions as well. If we have an older version of **Windows** or we just want to try something else, we can install the **PuTTY** client (<https://www.putty.org/>) which happens to be one of the most popular options.
 
 #### Command line SSH client
 
@@ -66,7 +74,7 @@ Once, on the terminal, enter:
 ssh -p 2222 user@localhost
 ```
 
-On your first session to this machine, you may be asked to confirm the connection. Do it by entering ***yes***. Then enter ***linux*** as password (keep in mind that no characters will be displayed while you type) and hit **Enter**. 
+On your first session to this machine, you may be asked to confirm the connection. Do it by entering ***yes***. Then enter ***linux*** as password (keep in mind that no characters will be displayed while you type) and hit **Enter**.
 
 Now, you should see a prompt like this one:
 
@@ -236,7 +244,7 @@ Now, let's start a container and interact with it:
 
 ```
 docker container run -it ubuntu bash
-``` 
+```
 
 After a while we will be presented with a different prompt. We are inside the container. Let's execute a few commands:
 
@@ -256,7 +264,7 @@ cat /hello.txt
 
 In this particular case, all worked as expected. It is not always like this. It depends on what the author of the image decided to include.
 
-Okay, but how can we return to our initial session? There two ways - to terminate the **bash** session in the container by executing **exit** or just close the session without terminating it by pressing **Ctrl+P** and then **Ctrl+Q**. 
+Okay, but how can we return to our initial session? There two ways - to terminate the **bash** session in the container by executing **exit** or just close the session without terminating it by pressing **Ctrl+P** and then **Ctrl+Q**.
 
 Let's try the first way. Execute:
 
@@ -362,9 +370,9 @@ But our machine does not have desktop environment. How can we access this page? 
 curl http://localhost:8080
 ```
 
-Yes. We can "see" the default web page of the **NGINX** web server that is running inside the container. 
+Yes. We can "see" the default web page of the **NGINX** web server that is running inside the container.
 
-Can we see it better? Yes, we can. Remember that in the beginning, while we were setting our virtual machine, we created two port forwarding rules? Now, we will utilize the second one. Open a browser on your host machine and navigate to http://localhost:8080. Now, this is another story. 
+Can we see it better? Yes, we can. Remember that in the beginning, while we were setting our virtual machine, we created two port forwarding rules? Now, we will utilize the second one. Open a browser on your host machine and navigate to <http://localhost:8080>. Now, this is another story.
 
 So, in summary, we have this chain of port forwarding:
 
@@ -382,7 +390,7 @@ The **--force** flag is required as the container is still running.
 
 ### Exchange data with container
 
-Can we change the default web page? Yes, we can. Let's first prepare something. 
+Can we change the default web page? Yes, we can. Let's first prepare something.
 
 Create a folder in the home folder of the current user:
 
@@ -402,7 +410,7 @@ Now we have all that we need. Let's start another container, but this time using
 docker container run -d --name web -v ~/web:/usr/share/nginx/html -p 8080:80 nginx
 ```
 
-The new bit there is the **-v** flag (its long version is **--volume**) with which we attached our local folder **~/web** as the **/usr/share/nginx/html** folder in the container. This mage all our local files in the source folder available in the container. Further details on how to work with this image can be found here: https://hub.docker.com/_/nginx
+The new bit there is the **-v** flag (its long version is **--volume**) with which we attached our local folder **~/web** as the **/usr/share/nginx/html** folder in the container. This mage all our local files in the source folder available in the container. Further details on how to work with this image can be found here: <https://hub.docker.com/_/nginx>
 
 We can test it both on the command line in the virtual machine and in a browser tab on the host. It will work either way.
 
@@ -414,7 +422,7 @@ docker container rm --force web
 
 ### Create and publish own container image
 
-Let's go even further and create our own simple container image. It will be based on this image **php:apache** (https://hub.docker.com/_/php). 
+Let's go even further and create our own simple container image. It will be based on this image **php:apache** (<https://hub.docker.com/_/php>).
 
 Create a new folder, in the home folder of our user on the virtual machine, to accommodate all necessary files and change to it:
 
@@ -454,7 +462,7 @@ Before we continue, we should test our **PHP** code. Let's start a container and
 docker container run -d --name web -v ~/docker-image/web:/var/www/html  -p 8080:80 php:apache
 ```
 
-Test the result either on the command line or in a browser. It should work and besides the greeting, should show the name of the container in which it is working. 
+Test the result either on the command line or in a browser. It should work and besides the greeting, should show the name of the container in which it is working.
 
 Stop and remove the container:
 
@@ -483,7 +491,7 @@ LABEL author='Student Name <student@university.edu>'
 COPY web/ /var/www/html/
 ```
 
-Press **Ctrl+O** to save the file and confirm with **Enter**. Once done, press **Ctrl+X** to close the file. 
+Press **Ctrl+O** to save the file and confirm with **Enter**. Once done, press **Ctrl+X** to close the file.
 
 This is how our **docker-image** folder should look like:
 
@@ -536,7 +544,7 @@ docker container rm --force web
 
 There is one more step. Which is not mandatory but we will execute it. We may want to publish our image to a registry. This will allow us to use it on other **Docker** hosts and/or other people may use it as well (if we publish it to a public repository).
 
-We will use the **Docker Hub** registry. Go there (https://hub.docker.com/) and create an account for you. It is a simple process with just a few steps.
+We will use the **Docker Hub** registry. Go there (<https://hub.docker.com/>) and create an account for you. It is a simple process with just a few steps.
 
 Once done, return in the terminal session of our virtual machine and execute the following command to authenticate (or log in) to your account in **Docker Hub**:
 
@@ -617,8 +625,9 @@ Open a browser tab on the host and navigate to http://localhost:8080
 It works. Now, besides **Docker**, you know the top 10 cities in Bulgaria by population. :)
 
 Here we saw two additional topics/techniques:
-- networks - check here: https://docs.docker.com/network/
-- environment variables - check here: https://docs.docker.com/engine/reference/commandline/run/ 
+
+* networks - check here: <https://docs.docker.com/network/>
+* environment variables - check here: <https://docs.docker.com/engine/reference/commandline/run/>
 
 ### Clean up
 
@@ -635,8 +644,9 @@ We can go even further and delete all images that we do not need any more and al
 ## Getting to know Kubernetes with k3s
 
 Two parts here:
- - slides - why orchestration; what is Kubernetes; Kubernetes components; Kubernetes distributions; SUSE Rancher products; k3s; basic objects/resources
- - demo - spin a single k3s instance; introduction to some of the basic resources - namespaces, pods, services; labels and selectors
+
+* slides - why orchestration; what is Kubernetes; Kubernetes components; Kubernetes distributions; SUSE Rancher products; k3s; basic objects/resources
+* demo - spin a single k3s instance; introduction to some of the basic resources - namespaces, pods, services; labels and selectors
 
 ### Create a single-node Kubernetes cluster based on k3s
 
@@ -706,7 +716,7 @@ cd suse-tu/lecture-3/demo-files
 
 Now, we are ready to continue our exploration.
 
-### Explore and get help 
+### Explore and get help
 
 To retrieve a list of all pods (in the default namespace), we can execute:
 
@@ -714,7 +724,7 @@ To retrieve a list of all pods (in the default namespace), we can execute:
 kubectl get pods
 ```
 
-It appears that there aren't many (in fact, none). We can modify this command to get the pods in all namespaces: 
+It appears that there aren't many (in fact, none). We can modify this command to get the pods in all namespaces:
 
 ```
 kubectl get pods --all-namespaces
@@ -728,13 +738,13 @@ kubectl get all --all-namespaces
 
 We can use a shorter variant of the **--all-namespaces** option by substituting it with **-A**.
 
-How can we know what resources are supported? We can ask for this by executing: 
+How can we know what resources are supported? We can ask for this by executing:
 
 ```
 kubectl api-resources
 ```
 
-Then perhaps, we want to know th supported API versions. The answer is a matter of executing this: 
+Then perhaps, we want to know th supported API versions. The answer is a matter of executing this:
 
 ```
 kubectl api-versions
@@ -808,7 +818,7 @@ kubectl get pods
 
 Wait a while, until its status change to **Running**. Rerun the command a few times.
 
-Sometimes we want to see detailed information about the pod. If this is the case, we can execute: 
+Sometimes we want to see detailed information about the pod. If this is the case, we can execute:
 
 ```
 kubectl describe pod appa-pod
@@ -834,13 +844,13 @@ kubectl apply -f 2-appa-pod-ext.yml
 
 Note the warning. It is because of the imperative creation of the initial version of the resource.
 
-Now, let's display detailed information about the pod again: 
+Now, let's display detailed information about the pod again:
 
 ```
 kubectl describe pod appa-pod
 ```
 
-Explore the labels section. And as we can see, it changed. 
+Explore the labels section. And as we can see, it changed.
 
 ### Work with services
 
@@ -868,7 +878,7 @@ Copy the appa-svc NodePort value and execute the following command:
 curl http://localhost:<node-port>
 ```
 
-Okay. Our application is working. 
+Okay. Our application is working.
 
 So this port was auto-generated. This makes it difficult to know in advance and create a port forwarding rule, which is the only way to access the application on the host in our case. Of course, there are solutions to this. One of them is to add/change a port forwarding rule, once we know the actual port. Other solution is to prepare a special manifest for the service. This will allow us to control the value of the NodePort.
 
@@ -884,7 +894,7 @@ Let's explore the configuration file that we will use to create a similar servic
 cat 3-appa-svc.yml
 ```
 
-Now, create the service in a declarative manner: 
+Now, create the service in a declarative manner:
 
 ```
 kubectl apply -f 3-appa-svc.yml
@@ -896,7 +906,7 @@ Go on and display detailed information about the service:
 kubectl describe svc appa-svc
 ```
 
-Note the Endpoints position. It contains a reference to the pod. Now, the NodePort has a fixed and known value. So, we can use it to access the application on the host (we should have the forwarding rule set). Open a browser tab on the host and navigate to http://localhost:8080
+Note the Endpoints position. It contains a reference to the pod. Now, the NodePort has a fixed and known value. So, we can use it to access the application on the host (we should have the forwarding rule set). Open a browser tab on the host and navigate to <http://localhost:8080>
 
 And here it is. Our application. It works.
 
@@ -918,19 +928,19 @@ Note the **Endpoints** position. It is empty now. No pods are served by the serv
 
 ## Work with deployments
 
-As with the pods and services, we can use imperative approach to create deployments. Let's create a deployment with two pod replicas: 
+As with the pods and services, we can use imperative approach to create deployments. Let's create a deployment with two pod replicas:
 
 ```
 kubectl create deployment appa-deploy --image=shekeriev/k8s-appa:v1 --replicas=2 --port=80
 ```
 
-Ask for information about the deployment: 
+Ask for information about the deployment:
 
 ```
 kubectl get deployment
 ```
 
-And then ask for more details: 
+And then ask for more details:
 
 ```
 kubectl describe deployment appa-deploy
@@ -942,7 +952,7 @@ Let's scale up the deployment to ten pod replicas:
 kubectl scale deployment appa-deploy --replicas=10
 ```
 
-And watch how the pod replicas are being created: 
+And watch how the pod replicas are being created:
 
 ```
 kubectl get pods -w
@@ -962,13 +972,13 @@ Now, let's explore the configuration file that will be used to create a deployme
 cat 4-appa-deploy-v1.yml
 ```
 
-Create the deployment in a declarative manner: 
+Create the deployment in a declarative manner:
 
 ```
 kubectl apply -f 4-appa-deploy-v1.yml
 ```
 
-Watch while the pods are being created: 
+Watch while the pods are being created:
 
 ```
 kubectl get pod -w
@@ -988,7 +998,7 @@ And for a detailed deployment status
 kubectl get deployment -o wide
 ```
 
-Note the **SELECTOR** column content. 
+Note the **SELECTOR** column content.
 
 Return to the browser tab that we opened earlier. Refresh it a few times and pay attention to the bottom line. It changes with each refresh. So we are being served by different pods. This is cool.
 
@@ -1002,19 +1012,19 @@ vimdiff 4-appa-deploy-v1.yml 5-appa-deploy-v2.yml
 
 Close the comparison utility by pressing the **Esc** key, then enter **:qa** and hit **Enter**.
 
-Before we start the actual upgrade, let's explore a few other things. Retrieve detailed information about the current deployment: 
+Before we start the actual upgrade, let's explore a few other things. Retrieve detailed information about the current deployment:
 
 ```
 kubectl describe deployment appa-deploy
 ```
 
-Then list current replica sets: 
+Then list current replica sets:
 
 ```
 kubectl get rs
 ```
 
-There is a reference to one replica set that created the 10 instances of the pod. Retrieve detailed information about the only replica set (if there were many, we should have specified the name as well) by executing: 
+There is a reference to one replica set that created the 10 instances of the pod. Retrieve detailed information about the only replica set (if there were many, we should have specified the name as well) by executing:
 
 ```
 kubectl describe rs
@@ -1040,7 +1050,7 @@ kubectl describe rs
 
 As you can see a new pod gets created. Why? Because we stated that we want 10 replicas. Then, by deleting one, we changed the current state (9) and it differs from the desired state (10). One of the main tasks of the cluster and in this case the replica set is to watch and apply corrective actions.
 
-Now, it is time to apply the newer deployment configuration. This time we will record the changes: 
+Now, it is time to apply the newer deployment configuration. This time we will record the changes:
 
 ```
 kubectl apply -f 5-appa-deploy-v2.yml --record
@@ -1048,29 +1058,29 @@ kubectl apply -f 5-appa-deploy-v2.yml --record
 
 You will see a flag deprecation message. So, this means that we should not rely on this functionality (the **--record**) flag as it will be dropped in future versions. After all, all it does, is ot record information for us. The process will be the same even if do not set the flag.
 
-Watch the deployment rollout: 
+Watch the deployment rollout:
 
 ```
 kubectl rollout status deployment appa-deploy
 ```
 
-It is done one replica at a time. 
+It is done one replica at a time.
 
-Refresh the open browser tab. You will notice that some of the requests will be served by the old version of the "application" and others by the new one. 
+Refresh the open browser tab. You will notice that some of the requests will be served by the old version of the "application" and others by the new one.
 
-Now, let's retrieve the history of the deployment: 
+Now, let's retrieve the history of the deployment:
 
 ```
 kubectl rollout history deployment appa-deploy
 ```
 
-Let's imagine that we want to undo the latest deployment and return the the previous version of the "application". Execute the following: 
+Let's imagine that we want to undo the latest deployment and return the the previous version of the "application". Execute the following:
 
 ```
 kubectl rollout undo deployment appa-deploy --to-revision=1
 ```
 
-Watch the rollback process: 
+Watch the rollback process:
 
 ```
 kubectl rollout status deployment appa-deploy
@@ -1078,7 +1088,7 @@ kubectl rollout status deployment appa-deploy
 
 Refresh the open browser tab. You will notice that some of the requests will be served by the old version of the "application" and others by the new one.
 
-Once done, retrieve the history of the deployment: 
+Once done, retrieve the history of the deployment:
 
 ```
 kubectl rollout history deployment appa-deploy
@@ -1086,19 +1096,19 @@ kubectl rollout history deployment appa-deploy
 
 ### Clean up
 
-Remove the deployment together with the replica set and all the pods: 
+Remove the deployment together with the replica set and all the pods:
 
 ```
 kubectl delete deployment appa-deploy
 ```
 
-Then, remove the service: 
+Then, remove the service:
 
 ```
 kubectl delete service appa-svc
 ```
 
-Finally, check that there are not any unwanted resources left: 
+Finally, check that there are not any unwanted resources left:
 
 ```
 kubectl get all --all-namespaces
@@ -1107,8 +1117,9 @@ kubectl get all --all-namespaces
 ## Kubernetes cluster with k3s (*)
 
 Two parts here:
- - slides - steps and requirements
- - demo - spin a small k3s based cluster; run an application
+
+* slides - steps and requirements
+* demo - spin a small k3s based cluster; run an application
 
 ### Create a three-node Kubernetes cluster based on k3s
 
@@ -1117,18 +1128,20 @@ For this part we will use three clean machines. If the one from the previous par
 #### Import machines
 
 Import three new machines, using the familiar procedure. You can shrink down their memory to 1GB or use just two machines if you are short on resources. They should meet the following requirements:
-- node 1 - name it **k3s-1** and create two port forwarding rules - **10001 (host)** <- **22 (guest)** and **8080 (host) <- 30001 (guest)**
-- node 2 - name it **k3s-2** and create one port forwarding rule - **10002 (host)** <- **22 (guest)**
-- node 3 - name it **k3s-3** and create one port forwarding rule - **10003 (host)** <- **22 (guest)**
 
-Now, add a second network adapter to them and make sure those adapters are in the same network (for example, ***k3s-net***). Refer to this picture: 
+* node 1 - name it **k3s-1** and create two port forwarding rules - **10001 (host)** <- **22 (guest)** and **8080 (host) <- 30001 (guest)**
+* node 2 - name it **k3s-2** and create one port forwarding rule - **10002 (host)** <- **22 (guest)**
+* node 3 - name it **k3s-3** and create one port forwarding rule - **10003 (host)** <- **22 (guest)**
+
+Now, add a second network adapter to them and make sure those adapters are in the same network (for example, ***k3s-net***). Refer to this picture:
 
 ![](images/virtualbox-intnet.png)
 
 Then start the machines and open SSH session to each one of them in a separate window/terminal:
-- k3s-1 -> `ssh -p 10001 user@localhost`
-- k3s-2 -> `ssh -p 10002 user@localhost`
-- k3s-3 -> `ssh -p 10003 user@localhost`
+
+* k3s-1 -> `ssh -p 10001 user@localhost`
+* k3s-2 -> `ssh -p 10002 user@localhost`
+* k3s-3 -> `ssh -p 10003 user@localhost`
 
 #### Configure all three machines
 
@@ -1151,8 +1164,9 @@ Press **Alt+O** to confirm the changes and close this screen.
 Once in the main menu, press **Alt+Q** to close the application. Then, close the session and reopen it.
 
 Repeat the same procedure on the other virtual machines - **k3s2** and **k3s3**. Of course, adjust their addresses and names:
-- **k3s2** -> IP: ***192.168.222.102*** and hostname: ***k3s-2***
-- **k3s3** -> IP: ***192.168.222.103*** and hostname: ***k3s-3***
+
+* **k3s2** -> IP: ***192.168.222.102*** and hostname: ***k3s-2***
+* **k3s3** -> IP: ***192.168.222.103*** and hostname: ***k3s-3***
 
 Once done, continue with the next paragraph.
 
@@ -1217,7 +1231,7 @@ Return on the first machine and ask for the list of nodes in our k3s cluster wit
 ```
 kubectl get nodes
 ```
- 
+
 Should we want more details about the nodes, we can execute this:
 
 ```
@@ -1252,9 +1266,9 @@ Explore the configuration file:
 cat 6-appb.yml
 ```
 
-Note how the two resource (deployment and service) are separated by "---". 
+Note how the two resource (deployment and service) are separated by "---".
 
-Create the resources described in the file: 
+Create the resources described in the file:
 
 ```
 kubectl apply -f 6-appb.yml
@@ -1266,7 +1280,7 @@ List the deployments:
 kubectl get deployment
 ```
 
-Retrieve detailed information about the deployment: 
+Retrieve detailed information about the deployment:
 
 ```
 kubectl describe deployment appb-deploy
@@ -1278,7 +1292,7 @@ List the pods ands services:
 kubectl get pods, services
 ```
 
-Open a browser tab on the host and navigate to http://localhost:8080 
+Open a browser tab on the host and navigate to <http://localhost:8080>
 
 List the pods in the default namespace:
 
@@ -1294,7 +1308,7 @@ Copy a pod's name and create a session to it to explore it further (substitute *
 export POD=appb-deploy-xxxxxxxxxx-xxxxx
 ```
 
-Now, explore the first container in the pod: 
+Now, explore the first container in the pod:
 
 ```
 kubectl exec -it $POD --container appb-container-1st -- bash
@@ -1340,7 +1354,7 @@ kubectl logs $POD --container appb-container-1st
 
 By now, we should have a basic understanding of some of the basic "moving parts" in **Kubernetes**. This is a huge topic and demands for further exploration both in width and depth.
 
-### Clean up 
+### Clean up
 
 Remove the resources created in this part:
 
@@ -1350,24 +1364,60 @@ kubectl delete -f 6-appb.yml
 
 ## Homework
 
-There are two challenges. You may tackle just the first one or both (the ideal case). The first one is mandatory.
+There are two challenges. You may tackle just the first one or both (the ideal case). The first one is mandatory. The second one is for those of you, who find the first challenge as too easy. ;)
 
 You will find that both are really close to what we did during the demo. So, all the answers are in this document.
 
-Of course, should you have any questions, do not hesitate to ask for guidance. You can use the Discord channel - https://discord.gg/ztaTJG2EuM
+Of course, should you have any questions, do not hesitate to ask for guidance. You can use the Discord channel - <https://discord.gg/ztaTJG2EuM>
 
 ### Challenge 1
 
-You are expected to:
-- create a simple index.php file that shows at least your faculty number
-- create a Dockerfile that contains instructions for creating a container image based on PHP+Apache that includes the index.html file from the previous step
-- build an image named
+For this one you will need a Docker host.
 
+You are expected to:
+
+* create a folder **homework-3**
+* create a subfolder **web** and place there a simple **index.html** file that shows at least your **faculty number** and the **group** separated with comma (for example, ***1234567890, 45***)
+* create a **Dockerfile** that contains instructions for creating a container image based either on **Apache** or **NGINX** that includes the **index.html** file from the previous step
+* build an image named **homework** out of the **Dockerfile**
+* use the image to run a container in **detached mode**  that publishes port **80** to port **8080** on the host
+* put the two commands from the previous two bullets in a text file named **readme.txt**
+
+At the end you are expected to end up with a file hierarchy like this:
+
+```
+homework-3/
+├── Dockerfile
+├── readme.txt
+└── web
+    └── index.html
+```
+
+Create **homework-3** repositry in your GitHub account and upload the files there.
 
 ### Challenge 2 (*)
-You are expected to tackle this challenge:
- - publish it to registry (create an account in Docker Hub)
- - install a k3s single node cluster (follow the same procedure as the one in the demonstration)
- - create a deployment with 3 replicas and a service (they may be two separate files or one)
- - deploy an application based on your image
- - upload the files (Dockerfile, to the git repo
+
+Proceed with this only if you are done with the first one.
+
+For this one you will need a single node k3s cluster.
+
+You are expected to:
+
+* publish the image from the first challenge to your account in Docker Hub
+* create a file named **homework-pod.yaml** in the **homework3** folder that creates a pod named homework-pod based on the published image and with label **app** set to **homework**
+* create a file named **homework-svc.yaml** in the **homework3** folder that creates a service named homework-svc that serves the pod (looks for the same label with the same value) and listens on a **NodePort 30080**
+* deploy the two manifests in the k3s cluster
+
+At the end you are expected to end up with a file hierarchy like this:
+
+```
+homework-3/
+├── Dockerfile
+├── homework-pod.yaml
+├── homework-svc.yaml
+├── readme.txt
+└── web
+    └── index.html
+```
+
+Do not forget to make sure that the two manifests are uploaded in the GitHub repository from the first challenge.
