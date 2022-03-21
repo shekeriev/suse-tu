@@ -22,6 +22,6 @@ spec:
     spec:
       containers:
       - name: appa-container
-        image: shekeriev/k8s-appa:v2
+        image: shekeriev/k8s-appa:k3s
         ports:
         - containerPort: 80 
