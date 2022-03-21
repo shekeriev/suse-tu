@@ -2,6 +2,13 @@
 
 A multi-part session that aims to cover various basic concepts and techniques when working with containers. The journey starts with a single **Docker** host. Then, once the basics are covered, will move on to a single **k3s** host. It will be used to do a transition to the **Kubernetes** way of working with containers. Finally, if the time allows, a three-node **k3s** cluster will be created.
 
+The content is organized in the following sections:
+
+* Part 1: Introduction to containers with Docker
+* Part 2: Getting to know Kubernetes with k3s
+* Part 3: Kubernetes cluster with k3s (*)
+* Homework
+
 All sections marked with (*) are not mandatory.
 
 The most up to date version of this document can be found here: <https://github.com/shekeriev/suse-tu/tree/main/lecture-3/demo.md>
@@ -926,7 +933,7 @@ kubectl describe svc appa-svc
 
 Note the **Endpoints** position. It is empty now. No pods are served by the service. We deleted the only one that matched the label selectors.
 
-## Work with deployments
+### Work with deployments
 
 As with the pods and services, we can use imperative approach to create deployments. Let's create a deployment with two pod replicas:
 
