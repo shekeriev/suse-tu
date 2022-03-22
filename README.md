@@ -8,3 +8,5 @@
 Materials for every lecture can be found in the respective folder.
 
 For instructions on how to use the provided virtual machine templates, go to the **virtual-machines** folder.
+
+Should you have any questions, do not hesitate to ping us in the Discord channel - <https://discord.gg/ztaTJG2EuM>
