@@ -587,12 +587,24 @@ The final step is to publish (or **push**) the image to the registry. Execute th
 docker image push <account>/myimage
 ```
 
+Where ***<account>*** is your username in **Docker Hub**. For example, as mine is ***shekeriev***, the above command will become:
+
+```
+docker image push shekeriev/myimage
+```
+
 If you open the web page of Docker Hub and go to your account, you will see the image there. Congratulations! :)
 
 Should we want, we can use it to run a container just like with every other image. We can execute:
 
 ```
 docker container run -d --name web -p 8080:80 <account>/myimage
+```
+
+Where ***<account>*** is your username in **Docker Hub**. For example, as mine is ***shekeriev***, the above command will become:
+
+```
+docker container run -d --name web -p 8080:80 shekeriev/myimage
 ```
 
 It should work. Once done, do not forget to stop it and remove it.
@@ -672,7 +684,7 @@ It will take care of everything. In less than 30 seconds we will have a fully wo
 There is one minor adjustment that need to do in order to be able to use it easy as a regular user. We must adjust the the permissions of the main configuration file to allow everyone to read it. Execute:
 
 ```
-chmod go+r /etc/rancher/k3s/k3s.yaml
+sudo chmod go+r /etc/rancher/k3s/k3s.yaml
 ```
 
 Now, we can execute the following to check the installed version:
@@ -1400,7 +1412,7 @@ homework-3/
     └── index.html
 ```
 
-Create **homework-3** repositry in your GitHub account and upload the files there.
+Create **homework-3** repository in your GitHub account and upload the files there.
 
 ### Challenge 2 (*)
 
