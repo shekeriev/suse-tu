@@ -24,10 +24,10 @@ You can check if your CPU supports virtualization using the following resources:
 - for AMD CPUs - <https://www.amd.com/en/products/specifications/processors>
 - any CPU - <https://www.cpu-world.com/>
 
-Even if your processor supports virtualization, the operating system still may not see and be able to use it. To check how the OS sees the capabilies of the CPU, you may use the following:
+Even if your processor supports virtualization, the operating system still may not see and be able to use it. To check how the OS sees the capabilities of the CPU, you may use the following:
 
 - for Windows - use the CPU-Z utility (<https://www.cpuid.com/softwares/cpu-z.html>) or the Coreinfo utility (<https://docs.microsoft.com/en-us/sysinternals/downloads/coreinfo>)
-- for Linux distributions, execute the following command (if the result is greather than 0, you are good to go):
+- for Linux distributions, execute the following command (if the result is greater than 0, you are good to go):
 
         grep -E 'vmx|svm' /proc/cpuinfo | wc -l
 
@@ -159,7 +159,7 @@ This is an alternative hypervisor that those of you who are working on a Linux d
 
 To create one virtual machine from the template, we must follow these steps:
 
-- download the template **kv-opensuse-leap-15.3.qcow2** locally and copy it to the folder where the virtual disks are stored (usually, it is /var/lib/libvirt/images/)
+- download the template **kv-opensuse-leap-15.3.qcow2** locally and copy it to the folder where the virtual disks are stored (usually, it is **/var/lib/libvirt/images/**)
 - open the **Virtual Machine Manager** application and connect to your KVM
 - go to the main menu and select **File** > **New Virtual Machine**
 - select **Import existing disk image** and click **Forward**
@@ -175,7 +175,7 @@ The VM will be started automatically. All commands that we will need are shown a
 
 **Hyper-V Default Switch missing**
 
-In general, it is difficult to recreate the default switch. Instead, we can create a basic NAT switch which will get us covered. The only drwaback is that it won't have any DHCP functionalities. So, we should manually configure the network settings of our virtual machines. Thus, in addition to the switch, we can create a small virtual machine that will act as DHCP server.
+In general, it is difficult to recreate the default switch. Instead, we can create a basic NAT switch which will get us covered. The only drawback is that it won't have any DHCP functionalities. So, we should manually configure the network settings of our virtual machines. Thus, in addition to the switch, we can create a small virtual machine that will act as DHCP server.
 
 Should you want to create just the switch and take care of the rest by yourself (for example, manual setup of IP addresses on the virtual machines), check this link <https://zahariev.pro/files/hyper-v-nat-switch.html> and follow the instructions there.
 
@@ -204,7 +204,7 @@ If you are looking for an automated solution, you check this procedure:
 
         Create-HVDHCPSetup
 
-- should you want to delete the artefacts, execute this instead
+- should you want to delete the artifacts, execute this instead
 
         Remove-HVDHCPSetup
 
