@@ -7,7 +7,7 @@ The content is organized in the following sections:
 * Part 1: Introduction to containers with Docker
 * Part 2: Getting to know Kubernetes with k3s
 * Part 3: Kubernetes cluster with k3s (*)
-* Homework (available as a separate file as well)
+* Homework *(available as a separate file as well)*
 
 All sections marked with (*) are not mandatory.
 
@@ -1382,6 +1382,8 @@ kubectl delete -f 6-appb.yml
 ```
 
 ## Homework
+
+*(Available as a separated document as well)*
 
 There are two challenges. You may tackle just the first one or both (the ideal case). The first one is mandatory. The second one is for those of you, who find the first challenge as too easy. ;)
 
