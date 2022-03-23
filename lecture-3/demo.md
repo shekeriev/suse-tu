@@ -7,7 +7,7 @@ The content is organized in the following sections:
 * Part 1: Introduction to containers with Docker
 * Part 2: Getting to know Kubernetes with k3s
 * Part 3: Kubernetes cluster with k3s (*)
-* Homework
+* Homework (available as a separate file as well)
 
 All sections marked with (*) are not mandatory.
 
