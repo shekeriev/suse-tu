@@ -2,11 +2,11 @@
 
 This document describes the requirements and the steps to follow in order to prepare for the exercises. The information is organized in the following sections:
 
-- Hardware Requirements
-- Software Requirements
-- Virtual Machines Repository
-- Hypervisor Instructions
-- Troubleshooting
+- [Hardware Requirements](#hardware-requirements)
+- [Software Requirements](#software-requirements)
+- [Virtual Machines Repository](#virtual-machines-repository)
+- [Hypervisor Instructions](#hypervisor-instructions)
+- [Troubleshooting](#troubleshooting)
 
 The most up to date version of this document can be found here: <https://github.com/shekeriev/suse-tu/tree/main/virtual-machines>
 

@@ -4,10 +4,10 @@ A multi-part session that aims to cover various basic concepts and techniques wh
 
 The content is organized in the following sections:
 
-* Part 1: Introduction to containers with Docker
-* Part 2: Getting to know Kubernetes with k3s
-* Part 3: Kubernetes cluster with k3s (*)
-* Homework *(available as a separate file as well)*
+* [Part 1: Introduction to containers with Docker](#introduction-to-containers-with-docker)
+* [Part 2: Getting to know Kubernetes with k3s](#getting-to-know-kubernetes-with-k3s)
+* [Part 3: Kubernetes cluster with k3s (*)](#kubernetes-cluster-with-k3s)
+* [Homework](#homework) *(available as a separate file as well)*
 
 All sections marked with (*) are not mandatory.
 
