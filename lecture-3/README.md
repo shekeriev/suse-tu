@@ -13,7 +13,7 @@ lecture-3/
 ├── demo.md       ---> the main demo document
 ├── demo.pdf      ---> a PDF version of the demo document
 ├── homework.md   ---> this document contains the homework challenges
-├── homework.pdf  ---> a PDF version of the homework document
+├── homework.pdf  ---> a PDF version of the homework document (the same is available at the end of the demo.md file)
 ├── README.md     ---> this file
 └── slides.pdf    ---> a PDF version of the slides
 ```
