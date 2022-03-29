@@ -69,13 +69,15 @@ Virtual machine templates can be downloaded from here: <https://zahariev.pro/go/
 
 Each template file's name follows this structure ***xx-opensuse-leap-15.3[-gnome].yyy***. Where ***xx*** is the type of the virtualization solution and ***yyy*** is the type of the file - either ***zip*** or ***ova***.
 
-There are three (1) sets of templates - one for every supported virtualization solution. They can be distinguished by the first two letters:
+There are three (1) (2) sets of templates - one for every supported virtualization solution. They can be distinguished by the first two letters:
 
 - **hv** stands for **Microsoft Hyper-V**
 - **vb** stands for **Oracle VirtualBox**
 - **vm** stands for **VMware Workstation**
 
 *(1) There is one additional template ***kv-opensuse-leap-15.3.qcow2***. It is a text-only installation of openSUSE Leap 15.3. It is to be used with the KVM hypervisor.*
+
+*(2) There is one additional template ***utm-opensuse-tumbleweed.zip***. It is a text-only installation of openSUSE Tumbleweed. It is to be used with the UTM application under Apple M1 based machines.*
 
 Furthermore, for every solution, there are two different versions - one without a desktop environment (text-only mode) and one with a desktop environment (GNOME).
 
