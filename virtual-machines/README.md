@@ -3,7 +3,9 @@
 This document describes the requirements and the steps to follow in order to prepare for the exercises. The information is organized in the following sections:
 
 - [Hardware Requirements](#hardware-requirements)
+- [Hardware Requirements (Apple M1)](#hardware-requirements-apple-m1)
 - [Software Requirements](#software-requirements)
+- [Software Requirements (Apple M1)](#software-requirements-apple-m1)
 - [Virtual Machines Repository](#virtual-machines-repository)
 - [Hypervisor Instructions](#hypervisor-instructions)
 - [Troubleshooting](#troubleshooting)
@@ -11,6 +13,8 @@ This document describes the requirements and the steps to follow in order to pre
 The most up to date version of this document can be found here: <https://github.com/shekeriev/suse-tu/tree/main/virtual-machines>
 
 ## Hardware Requirements
+
+*Please note that this applies to all AMD and Intel based computers including the Apple products that use Intel chips.*
 
 Your hardware is expected to meet the following requirements:
 
@@ -37,6 +41,10 @@ Even if your processor supports virtualization, the operating system still may n
 
 Do not forget to activate virtualization support in the BIOS if you haven't done so.
 
+## Hardware Requirements (Apple M1)
+
+Nothing special here. All Apple computers based on the M1 chip support virtualization.
+
 ## Software Requirements
 
 In terms of software, you must be working on a recent version of Windows 10/11, macOS, or Linux distribution. In addition, you must have installed a recent version of **one** of the following virtualization solutions (hypervisors):
@@ -47,7 +55,13 @@ In terms of software, you must be working on a recent version of Windows 10/11, 
 
 *(1) Hyper-V role is available and supported only on Windows Pro, Enterprise, and Education editions.*
 
+If you are working on a Linux distribution and want to experiment, you can install **KVM**. There is a template for it as well.
+
 In general, if you are wondering which one to select, go for Oracle VirtualBox. It is simple, free, and offers broad support for both host and guest operating systems.
+
+## Software Requirements (Apple M1)
+
+There are just a few virtualization options currently for **Apple M1** based machines. One such solution is the **UTM** (<https://mac.getutm.app/>) application. You must download it and install it. The process is trivial and won't be covered here.
 
 ## Virtual Machines Repository
 
@@ -170,6 +184,22 @@ To create one virtual machine from the template, we must follow these steps:
 - after a while the process will finish and the machine will appear in the library of the application
 
 The VM will be started automatically. All commands that we will need are shown as buttons on the toolbar. They are available in the context menu (select the machine and right-click on it) of the machine as well.
+
+### UTM *
+
+This one is applicable only to **Apple M1** based machines.
+
+To create one virtual machine from the template, we must follow these steps:
+
+- download the template **utm-opensuse-tumbleweed.zip** locally and extract it to a folder of your choice
+- if you want to adjust the name of the machine, you must rename the extracted file
+- open the **UTM** application
+- go to the main menu and select **File** > **Open**
+- select the extracted template and confirm with **Open**
+- this will register the virtual machine
+- next, you can click on the settings button (top right corner) and adjust any of the options you want. Once done, confirm with **Save**
+
+The VM should be started manually. All commands that we will need are shown as buttons on the toolbar. They are available in the context menu (select the machine and right-click on it) of the machine as well.
 
 ## Troubleshooting
 
