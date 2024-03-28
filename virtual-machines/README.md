@@ -1,6 +1,6 @@
 # Virtual Machines Instructions
 
-This document describes the requirements and the steps to follow in order to prepare for the exercises. The information is organized in the following sections:
+This document describes the requirements and the steps to follow to prepare for the exercises. The information is organized in the following sections:
 
 - [Hardware Requirements](#hardware-requirements)
 - [Hardware Requirements (Apple M1)](#hardware-requirements-apple-m1)
@@ -10,11 +10,11 @@ This document describes the requirements and the steps to follow in order to pre
 - [Hypervisor Instructions](#hypervisor-instructions)
 - [Troubleshooting](#troubleshooting)
 
-The most up to date version of this document can be found here: <https://github.com/shekeriev/suse-tu/tree/main/virtual-machines>
+The most up-to-date version of this document can be found here: <https://github.com/shekeriev/suse-tu/tree/main/virtual-machines>
 
 ## Hardware Requirements
 
-*Please note that this applies to all AMD and Intel based computers including the Apple products that use Intel chips.*
+*Please note that this applies to all AMD and Intel-based computers including the Apple products that use Intel chips.*
 
 Your hardware is expected to meet the following requirements:
 
@@ -77,11 +77,11 @@ There are three (1) (2) sets of templates - one for every supported virtualizati
 
 *(1) There is one additional template ***kv-opensuse-leap-15.3.qcow2***. It is a text-only installation of openSUSE Leap 15.3. It is to be used with the KVM hypervisor.*
 
-*(2) There is one additional template ***utm-opensuse-tumbleweed.zip***. It is a text-only installation of openSUSE Tumbleweed. It is to be used with the UTM application under Apple M1 based machines.*
+*(2) There is one additional template ***utm-opensuse-tumbleweed.zip***. It is a text-only installation of openSUSE Tumbleweed. It is to be used with the UTM application under Apple M1-based machines.*
 
 Furthermore, for every solution, there are two different versions - one without a desktop environment (text-only mode) and one with a desktop environment (GNOME).
 
-You may wonder how to choose and which one to pick. First, you must pick the set that matches your installed virtualization solution. Then, it is a matter of personal preference - with or without a graphical interface. For the purpose of the current initiative, each one will do the job. The text-based template is the preferred one because it is smaller and requires fewer resources.
+You may wonder how to choose and which one to pick. First, you must pick the set that matches your installed virtualization solution. Then, it is a matter of personal preference - with or without a graphical interface. For the current initiative, each one will do the job. The text-based template is the preferred one because it is smaller and requires fewer resources.
 
 Credentials for the virtual machines are:
 
@@ -189,7 +189,7 @@ The VM will be started automatically. All commands that we will need are shown a
 
 ### UTM *
 
-This one is applicable only to **Apple M1** based machines.
+This one applies only to **Apple M1** based machines.
 
 To create one virtual machine from the template, we must follow these steps:
 
@@ -207,15 +207,17 @@ The VM should be started manually. All commands that we will need are shown as b
 
 **Hyper-V Default Switch missing**
 
-In general, it is difficult to recreate the default switch. Instead, we can create a basic NAT switch which will get us covered. The only drawback is that it won't have any DHCP functionalities. So, we should manually configure the network settings of our virtual machines. Thus, in addition to the switch, we can create a small virtual machine that will act as DHCP server.
+*Note: A newer version of the installation script and the appliance can be found here: <https://github.com/shekeriev/ahvdhcp>*
+
+In general, it is difficult to recreate the default switch. Instead, we can create a basic NAT switch which will get us covered. The only drawback is that it won't have any DHCP functionalities. So, we should manually configure the network settings of our virtual machines. Thus, in addition to the switch, we can create a small virtual machine that will act as a DHCP server.
 
 Should you want to create just the switch and take care of the rest by yourself (for example, manual setup of IP addresses on the virtual machines), check this link <https://zahariev.pro/files/hyper-v-nat-switch.html> and follow the instructions there.
 
 Of course, we can go with the complete solution - switch + DHCP virtual machine. We can do it either manually, or use an automated solution.
 
-If you are looking for an automated solution, you check this procedure:
+If you are looking for an automated solution, you can check this procedure:
 
-- open a PowerShell session with **Run as administrator** option (right click on the icon and select the option)
+- open a PowerShell session with **Run as administrator** option (right-click on the icon and select the option)
 - navigate to the root folder
         
         cd c:\
@@ -240,7 +242,7 @@ If you are looking for an automated solution, you check this procedure:
 
         Remove-HVDHCPSetup
 
-As a result of the above, we will end up with a new switch (NAT vSwitch) and a tiny virtual machine (HVDHCP) that will act as DHCP server to the virtual machines that are connected to the switch. The default network settings are:
+As a result of the above, we will end up with a new switch (NAT vSwitch) and a tiny virtual machine (HVDHCP) that will act as a DHCP server for the virtual machines that are connected to the switch. The default network settings are:
 
 - network - 192.168.99.0/24
 - default gateway - 192.168.99.1
